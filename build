@@ -1,0 +1,17 @@
+#!/usr/bin/bash
+
+SCRIPT_DIR="$(dirname "$(realpath "$0")")"
+INPUT="$1"
+OUTPUT="${1%.c}"
+
+shift
+
+mkdir -p "$SCRIPT_DIR/bin"
+gcc $INPUT -o "$SCRIPT_DIR/bin/$OUTPUT" "$@"
+
+if [ $? -ne 0 ]; then
+  echo "Compilation failed."
+  exit 1
+fi
+
+"$SCRIPT_DIR/bin/$OUTPUT"
