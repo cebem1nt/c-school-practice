@@ -1,6 +1,6 @@
 #include "../lib/et21conio.h"
 #include <stdio.h>
-
+//
 void calcTaxes(float income)
 {
     float percentage = income / 100.0;
@@ -8,7 +8,7 @@ void calcTaxes(float income)
     float natTaxes = percentage * 5;
     float colTaxes = percentage * 2;
     float munTaxes = percentage * 0.3;
-    
+
     textcolor(YELLOW);
     printf("National taxes: %.2f \n", natTaxes);
     textcolor(GREEN);
@@ -17,7 +17,7 @@ void calcTaxes(float income)
     printf("Municipal taxes: %.2f \n", munTaxes);
 }
 
-void manualTest() 
+void manualTest()
 {
     int income ;
 
@@ -25,7 +25,7 @@ void manualTest()
     if (scanf("%d", &income) != 1) {
         textcolor(RED);
         printf("Invalid input. \n");
-        return ; 
+        return ;
     }
 
     calcTaxes(income);
@@ -49,5 +49,5 @@ int main()
         printf("\n");
     }
 
-    return 0; 
+    return 0;
 }
