@@ -6,8 +6,17 @@ OUTPUT="${1%.c}"
 
 shift
 
+# Read the first line of the .c file
+FIRST_LINE=$(head -n 1 "$INPUT")
+
+# Check if the first line starts with //!FLAGS:
+if [[ $FIRST_LINE =~ ^//FLAGS:\ (.*) ]]; then
+  FLAGS=${BASH_REMATCH[1]}
+  set -- $FLAGS "$@"
+fi
+
 mkdir -p "$SCRIPT_DIR/bin"
-gcc $INPUT -o "$SCRIPT_DIR/bin/$OUTPUT" "$@"
+gcc "$INPUT" -o "$SCRIPT_DIR/bin/$OUTPUT" "$@"
 
 if [ $? -ne 0 ]; then
   echo "Compilation failed."
