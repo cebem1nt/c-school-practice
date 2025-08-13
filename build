@@ -2,7 +2,9 @@
 
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
 INPUT="$1"
-OUTPUT="${1%.c}"
+
+FILE_NAME=$(basename "$1")
+OUTPUT="${FILE_NAME%.c}"
 
 shift
 
