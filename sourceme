@@ -1,0 +1,3 @@
+#!/bin/bash
+
+export PATH="$(dirname "$(realpath "$0")"):$PATH"
