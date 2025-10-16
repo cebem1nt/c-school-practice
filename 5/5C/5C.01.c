@@ -33,7 +33,6 @@ main()
     // I dont want to make a huge user input again. 
     // Please, i hope hardcoded tests are ok.
 
-
     // I could do previous two exercices with structs as well
     struct product prs[PRODUCTS] = {
         {10, 100.000, "Milk"},
@@ -50,21 +49,31 @@ main()
         {76, 100.000, "Cat"},
     };
 
-    char cmd;
-
     printf("f - find by article \n");
     printf("l - list all products \n");
     printf("0 - exit \n");
 
-    while ( (cmd = getchar()) != EOF ) {
-        unsigned int artc;
+    // Why that ugly way??? char cmd[1] ?? the hell is that?
+    // scanf with only one car, will read one char, that means
+    // if user inserts more than one char, next iteration of the loop
+    // will proceed the second char of previous input. This no good
+    while (1) {
         struct product* p;
+        int artc;
+        char cmd[1];
 
-        switch (cmd) {
+        if (scanf("%s", cmd) != 1) {
+            fprintf(stderr, "Invalid command, try again.\n");
+            continue;
+        }
+
+        switch (cmd[0]) {
         case 'f':
             printf("Enter article: ");
-            if (scanf("%u", &artc) != 1)
-                printf("\nInvalid article.\n");
+            if (scanf("%u", &artc) != 1) {
+                fprintf(stderr, "Invalid article \n");
+                break;
+            }
 
             p = find_product(prs, artc);
 
