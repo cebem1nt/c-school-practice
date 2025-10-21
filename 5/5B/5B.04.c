@@ -1,97 +1,77 @@
 #include <stdio.h>
 #include <string.h>
 
-#define PERSONS 8
-#define MAX_NAME 256
+#define PEOPLE_SIZE 5
+#define MAX_NAME_SIZE 50
+#define BIGGER_THAN(s1, s2) (strcmp(s1, s2) > 0)
 
-typedef char str_t[MAX_NAME];
+struct person {
+    char surname[MAX_NAME_SIZE];
+    char name[MAX_NAME_SIZE];
+    short age;
+};
 
-void 
-swap_int(int* a, int* b) 
+typedef struct person person_t;
+
+int
+input(char* prompt, char* type, void* dest) 
 {
-    int tmp = *a;
-    *a = *b;
-    *b = tmp;
+    printf("%s ", prompt);
+    if (scanf(type, dest) != 1) {
+        fprintf(stderr, "Incorrect input, try again.\n");
+        while (getchar() != '\n'); // Consume all the chars untill the '\n'
+        return 1;
+    }
+
+    return 0;
 }
 
-void 
-swap_s(str_t a, str_t b) 
+void
+sort_abc(struct person* arr)
 {
-    char tmp[MAX_NAME];
-    strcpy(tmp, a);
-    strcpy(a, b);
-    strcpy(b, tmp);
-}
+    // A pointer to the end of array
+    person_t* end = arr + PEOPLE_SIZE;
 
-// Compare by last name first, then by first name
-int 
-compare_names(
-    char* first1, char* first2, char* last1, char* last2) 
-{
-    int cmp = strcmp(last1, last2);
-    if (cmp != 0) return cmp;
-    return strcmp(first1, first2);
-}
-
-void 
-sort_abc(
-    str_t last_names[PERSONS], str_t first_names[PERSONS], int ages[PERSONS]) 
-{
-    for (int i = 0; i < PERSONS - 1; i++) {
-        int swapped = 0;
-
-        for (int j = 0; j < PERSONS - 1 - i; j++) {
-            if (compare_names(first_names[j], first_names[j+1],
-                              last_names[j],  last_names[j+1]) > 0) {
-                // Swap names
-                swap_s(last_names[j], last_names[j+1]);
-                swap_s(first_names[j], first_names[j+1]);
-                // Swap ages
-                swap_int(&ages[j], &ages[j+1]);
-                swapped = 1;
+    for (person_t* i = arr; i < end; i++) {
+        for (person_t* j = i+1; j < end; j++) {
+            if (BIGGER_THAN(i->name, j->name)) {
+                person_t tmp = *i;
+                *i = *j;
+                *j = tmp;
             }
         }
-
-        if (swapped == 0) {
-            break;
-        };
     }
 }
 
-int main(void) {
-    str_t last_names[PERSONS] = {0};
-    str_t first_names[PERSONS] = {0};
-    int   ages[PERSONS] = {0};
+int 
+main() 
+{
+    struct person  p_arr[PEOPLE_SIZE];
+    struct person* p_itr;
+
+    p_itr = p_arr;
 
     int i = 0;
-    while (i < PERSONS) {
-        printf("Enter last name: ");
-        if (scanf("%255s", last_names[i]) != 1) {
-            printf("\nInvalid last name, try again\n");
-            continue;
-        }
+    while (i < PEOPLE_SIZE) {
+        printf("\nFill the data of person %i\n", i+1);
 
-        printf("Enter first name: ");
-        if (scanf("%255s", first_names[i]) != 1) {
-            printf("\nInvalid first name, try again\n");
+        if (input("Enter name:", "%49s", &p_itr->name))
+            continue; // Trying again
+        if (input("Enter surname:", "%49s", &p_itr->surname))
             continue;
-        }
-
-        printf("Enter age: ");
-        if (scanf("%d", &ages[i]) != 1) {
-            printf("\nInvalid age, try again\n");
+        if (input("Enter age:", "%hi", &p_itr->age))
             continue;
-        }
 
-        putchar('\n');
         i++;
+        p_itr++;
     }
 
-    sort_abc(last_names, first_names, ages);
+    sort_abc(p_arr);
 
-    printf("Sorted list (Last, First : Age):\n");
-    for (int k = 0; k < PERSONS; k++) {
-        printf("%s, %s : %d\n", last_names[k], first_names[k], ages[k]);
+    printf("\nSorted people:\n");
+    for (int i = 0; i < PEOPLE_SIZE; i++) {
+        printf("%s %s, ", p_arr[i].name, p_arr[i].surname);
+        printf("age: %hi\n", p_arr[i].age);
     }
 
     return 0;
